@@ -3,32 +3,33 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <string.h>
 
 int main(){
-  printf("Statistics for directory:\n");
+  printf("Statistics for directory: .\n");
   DIR *cur;
   cur = opendir(".");
-  struct dirent *entry = readdir(cur);
+  struct dirent * entry = readdir(cur);
   int size = 0;
+  char directories[200] = "Directories:\n\t";
+  char files[200] = "Files:\n\t";
   while(entry) {
-    printf("%s ", entry-> d_name);
     struct stat data;
     stat(entry->d_name, &data);
-    if (data.st_mode & (1 << 11) ){
-      printf("Directory ");
+
+    if (S_ISDIR(data.st_mode)){ //idk why, but it works
+      strcat(directories, entry->d_name);
+      strcat(directories, "\n\t");
     }
-    printf("%ld Bytes\n", data.st_size);
+    else{
+      strcat(files, entry->d_name);
+      strcat(files, "\n\t");
+    }
     size += data.st_size;
-
-
-
     entry = readdir(cur);
   }
   printf("Total Size: %d bytes\n", size);
-
-
-
-
-
+  printf("%s\n", directories);
+  printf("%s\n", files);
   return 0;
 }
