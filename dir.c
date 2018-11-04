@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <string.h>
+#include <errno.h>
 
 //struct helper {char dirs[200]; char files[200];};
 
@@ -11,6 +12,10 @@ void dirstroy(char * path){
   printf("Statistics for directory: %s\n", path);
   DIR *cur;
   cur = opendir(path);
+  if (cur == NULL){
+    printf("%s\n",strerror(errno));
+    return;
+  }
   struct dirent * entry = readdir(cur);
   int size = 0;
   char directories[200] = "Directories:\n\t";
@@ -38,8 +43,9 @@ void dirstroy(char * path){
 int main(int argc, char * argv[]){
   char * path;
   if (argc != 2){
-  	printf("please input a directory name as the only input\n");
-  	return 1;
+  	printf("please input a directory name as the only input in this format:\n");
+	printf("make run args=\"<pathname>\"\n");
+  	return 0;
   }
   dirstroy(argv[1]);
   return 0;
